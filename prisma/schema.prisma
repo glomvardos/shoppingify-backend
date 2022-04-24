@@ -19,3 +19,12 @@ model User {
   firstName String
   lastName String
 }
+
+model Category {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  name String
+  note String
+  imageUrl String
+  category String
+}

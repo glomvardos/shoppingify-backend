@@ -9,6 +9,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { SingUpAuthDto, SignInDto } from './dto/dto';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -22,7 +23,7 @@ export class AuthService {
     const password = await argon.hash(dto.password);
 
     try {
-      const user = await this.prisma.user.create({
+      const user: User = await this.prisma.user.create({
         data: {
           email: dto.email,
           password,
@@ -43,7 +44,7 @@ export class AuthService {
   }
 
   async signin(dto: SignInDto) {
-    const user = await this.prisma.user.findUnique({
+    const user: User = await this.prisma.user.findUnique({
       where: {
         email: dto.email,
       },
