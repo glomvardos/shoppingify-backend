@@ -17,7 +17,7 @@ export class CategoryController {
   @Post('item')
   @HttpCode(201)
   addOne(@Body() dto: ItemDto) {
-    return this.categoryService.addItem(dto);
+    return this.categoryService.addOne(dto);
   }
 
   @Get('item')
