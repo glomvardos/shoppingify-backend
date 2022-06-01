@@ -19,14 +19,14 @@ export class CategoryService {
       },
     });
 
-    if (itemName) throw new ForbiddenException('Item name already exists');
+    if (itemName) throw new ForbiddenException('Item already exists');
 
     const category: Category = await this.prisma.category.create({
       data: {
         name: dto.name.toLowerCase().trim(),
         note: dto.note,
         imageUrl: dto.imageUrl,
-        category: dto.category,
+        category: dto.category.toLowerCase(),
       },
     });
 

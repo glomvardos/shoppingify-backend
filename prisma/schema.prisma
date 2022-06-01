@@ -28,3 +28,4 @@ model Category {
   imageUrl String
   category String
 }
+
