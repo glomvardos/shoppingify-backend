@@ -12,14 +12,15 @@ export class CategoryService {
   constructor(private prisma: PrismaService) {}
 
   // POST
-  async addOne(dto: ItemDto) {
-    const itemName = await this.prisma.category.findFirst({
+  async addOne(dto: ItemDto, userId: number) {
+    const items = await this.prisma.category.findMany({
       where: {
-        name: dto.name.toLowerCase().trim(),
+        userId: userId,
       },
     });
 
-    if (itemName) throw new ForbiddenException('Item already exists');
+    const isExistingItem = items.some((item) => item.name === dto.name);
+    if (isExistingItem) throw new ForbiddenException('Item already exists');
 
     const category: Category = await this.prisma.category.create({
       data: {
@@ -27,6 +28,11 @@ export class CategoryService {
         note: dto.note,
         imageUrl: dto.imageUrl,
         category: dto.category.toLowerCase(),
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
       },
     });
 
@@ -34,8 +40,12 @@ export class CategoryService {
   }
 
   // GET
-  async findAll() {
-    const categories: Category[] = await this.prisma.category.findMany();
+  async findAll(userId: number) {
+    const categories: Category[] = await this.prisma.category.findMany({
+      where: {
+        userId,
+      },
+    });
 
     return {
       items: categories,
@@ -43,21 +53,22 @@ export class CategoryService {
   }
 
   // DELETE
-  async deleteOne(id: string) {
-    const isItemExists = await this.prisma.category.findUnique({
+  async deleteOne(id: string, userId: number) {
+    const item = await this.prisma.category.findUnique({
       where: {
         id: +id,
       },
     });
 
-    if (!isItemExists) throw new NotFoundException('Item not found');
+    if (item.userId !== userId)
+      throw new ForbiddenException('You are not allowed to delete this item');
 
-    const item: Category = await this.prisma.category.delete({
+    if (!item) throw new NotFoundException('Item not found');
+
+    return await this.prisma.category.delete({
       where: {
         id: +id,
       },
     });
-
-    return item;
   }
 }

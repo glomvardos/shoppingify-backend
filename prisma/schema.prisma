@@ -18,6 +18,7 @@ model User {
   password String
   firstName String
   lastName String
+  category Category[]
 }
 
 model Category {
@@ -27,5 +28,7 @@ model Category {
   note String
   imageUrl String
   category String
+  userId Int
+  user User @relation(fields: [userId], references: [id])
 }
 
