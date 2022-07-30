@@ -60,6 +60,25 @@ export class AuthService {
     return this.signToken(user.id, user.email);
   }
 
+  async getAuthUser(userId: number) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    delete user.password;
+    return user;
+  }
+
+  async deleteUser(userId: number) {
+    return await this.prisma.user.delete({
+      where: {
+        id: userId,
+      },
+    });
+  }
+
   async signToken(userId: number, email: string): Promise<{ access: string }> {
     const payload = { sub: userId, email };
 
