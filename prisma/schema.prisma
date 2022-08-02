@@ -19,6 +19,7 @@ model User {
   firstName String
   lastName String
   category Category[]
+  shoppingLists ShoppingList[]
 }
 
 model Category {
@@ -28,6 +29,17 @@ model Category {
   note String
   imageUrl String
   category String
+  quantity Int?
+  userId Int
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ShoppingList {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name String
+  categories Json[]
   userId Int
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
