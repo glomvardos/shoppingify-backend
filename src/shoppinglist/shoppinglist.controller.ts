@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
@@ -23,5 +24,10 @@ export class ShoppinglistController {
     @GetUser('id') userId: number,
   ) {
     return this.shoppingListService.createShoppingList(dto, userId);
+  }
+
+  @Get('shoppinglist')
+  getShoppingLists(@GetUser('id') userId: number) {
+    return this.shoppingListService.getShoppingLists(userId);
   }
 }

@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ShoppingListDto } from './dto/dto';
 
@@ -17,6 +16,16 @@ export class ShoppinglistService {
           connect: {
             id: userId,
           },
+        },
+      },
+    });
+  }
+
+  async getShoppingLists(userId: number) {
+    return this.prisma.shoppingList.findMany({
+      where: {
+        user: {
+          id: userId,
         },
       },
     });
