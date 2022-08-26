@@ -19,7 +19,7 @@ model User {
   firstName String
   lastName String
   category Category[]
-  shoppingLists ShoppingList[]
+  shoppingLists ShoppingList[] 
 }
 
 model Category {
@@ -29,10 +29,8 @@ model Category {
   note String
   imageUrl String
   category String
-  quantity Int?
   userId Int
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  isCompleted Boolean @default(false)
+  user User? @relation(fields: [userId], references: [id],  onDelete: Cascade)
 }
 
 model ShoppingList {
@@ -40,11 +38,24 @@ model ShoppingList {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   name String
-  categories Json[]
-  userId Int
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categories ShoppingListItem[]
+  userId Int?
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   isCompleted Boolean @default(false)
   isCancelled Boolean @default(false)
   isActive Boolean @default(false)
 }
+
+model ShoppingListItem {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  name String
+  category String
+  shoppingListId Int?
+  shoppingList ShoppingList? @relation(fields: [shoppingListId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  isChecked Boolean @default(false)
+  quantity Int
+}
+
+
 
