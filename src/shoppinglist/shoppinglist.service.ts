@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { ShoppingListDto, UpdateShoppingListDto } from './dto/dto';
+import {
+  ShoppingListDto,
+  UpdateShoppingListDto,
+  UpdateShoppingListItemDto,
+} from './dto/dto';
 
 @Injectable()
 export class ShoppinglistService {
@@ -35,10 +39,23 @@ export class ShoppinglistService {
     });
   }
 
-  async updateShoppingList(
+  async updateShoppingList(listId: number, dto: UpdateShoppingListDto) {
+    const list = await this.prisma.shoppingList.update({
+      where: {
+        id: listId,
+      },
+      data: {
+        isCompleted: dto.isCompleted,
+        isCancelled: dto.isCancelled,
+      },
+    });
+    return list;
+  }
+
+  async updateShoppingListItem(
     listId: number,
     itemId: number,
-    dto: UpdateShoppingListDto,
+    dto: UpdateShoppingListItemDto,
   ) {
     const listItem = await this.prisma.shoppingList.update({
       where: {

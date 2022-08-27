@@ -14,5 +14,15 @@ export class ShoppingListDto {
 export class UpdateShoppingListDto {
   @IsBoolean()
   @IsNotEmpty()
+  isCompleted: boolean;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  isCancelled: boolean;
+}
+
+export class UpdateShoppingListItemDto {
+  @IsBoolean()
+  @IsNotEmpty()
   isChecked: boolean;
 }
