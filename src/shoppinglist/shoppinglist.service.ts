@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import {
   ShoppingListDto,
@@ -39,7 +39,21 @@ export class ShoppinglistService {
     });
   }
 
-  async updateShoppingList(listId: number, dto: UpdateShoppingListDto) {
+  async updateShoppingList(
+    userId: number,
+    listId: number,
+    dto: UpdateShoppingListDto,
+  ) {
+    const user = await this.prisma.shoppingList.findFirst({
+      where: {
+        id: listId,
+        userId,
+      },
+    });
+    if (!user) {
+      throw new ForbiddenException('You are not allowed to update this list');
+    }
+
     const list = await this.prisma.shoppingList.update({
       where: {
         id: listId,
@@ -53,10 +67,23 @@ export class ShoppinglistService {
   }
 
   async updateShoppingListItem(
+    userId: number,
     listId: number,
     itemId: number,
     dto: UpdateShoppingListItemDto,
   ) {
+    const user = await this.prisma.shoppingList.findFirst({
+      where: {
+        id: listId,
+        userId,
+      },
+    });
+    if (!user) {
+      throw new ForbiddenException(
+        'You are not allowed to update this list item',
+      );
+    }
+
     const listItem = await this.prisma.shoppingList.update({
       where: {
         id: listId,
@@ -82,5 +109,23 @@ export class ShoppinglistService {
       },
     });
     return listItem;
+  }
+
+  async deleteShoppingList(userId: number, listId: number) {
+    const user = await this.prisma.shoppingList.findFirst({
+      where: {
+        id: listId,
+        userId,
+      },
+    });
+    if (!user) {
+      throw new ForbiddenException('You are not allowed to delete this list');
+    }
+
+    return await this.prisma.shoppingList.delete({
+      where: {
+        id: listId,
+      },
+    });
   }
 }

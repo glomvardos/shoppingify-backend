@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -40,18 +41,33 @@ export class ShoppinglistController {
 
   @Patch('shoppinglist/:listId')
   updateShoppingList(
+    @GetUser('id') userId: number,
     @Body() dto: UpdateShoppingListDto,
     @Param('listId', ParseIntPipe) listId: number,
   ) {
-    return this.shoppingListService.updateShoppingList(listId, dto);
+    return this.shoppingListService.updateShoppingList(userId, listId, dto);
   }
 
   @Patch('shoppinglist/:listId/item/:itemId')
   updateShoppingListItem(
+    @GetUser('id') userId: number,
     @Body() dto: UpdateShoppingListItemDto,
     @Param('listId', ParseIntPipe) listId: number,
     @Param('itemId', ParseIntPipe) itemId: number,
   ) {
-    return this.shoppingListService.updateShoppingListItem(listId, itemId, dto);
+    return this.shoppingListService.updateShoppingListItem(
+      userId,
+      listId,
+      itemId,
+      dto,
+    );
+  }
+
+  @Delete('shoppinglist/:listId')
+  deleteShoppingList(
+    @GetUser('id') userId: number,
+    @Param('listId', ParseIntPipe) listId: number,
+  ) {
+    return this.shoppingListService.deleteShoppingList(userId, listId);
   }
 }
