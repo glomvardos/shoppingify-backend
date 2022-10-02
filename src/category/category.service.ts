@@ -52,6 +52,27 @@ export class CategoryService {
     };
   }
 
+  async getCategory(userId: number) {
+    const categories = await this.prisma.category.findMany({
+      where: {
+        userId,
+      },
+      select: {
+        category: true,
+      },
+    });
+
+    const transformedCategories = categories.reduce(
+      (arr, curr) =>
+        arr.some((cat) => cat.category === curr.category)
+          ? arr
+          : [...arr, curr],
+      [],
+    );
+
+    return transformedCategories;
+  }
+
   // DELETE
   async deleteOne(id: string, userId: number) {
     const item = await this.prisma.category.findUnique({

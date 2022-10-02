@@ -17,6 +17,11 @@ import { ItemDto } from './dto/dto';
 export class CategoryController {
   constructor(private categoryService: CategoryService) {}
 
+  @Get('category')
+  getCategory(@GetUser('id') userId: number) {
+    return this.categoryService.getCategory(userId);
+  }
+
   @Post('item')
   @HttpCode(201)
   addOne(@Body() dto: ItemDto, @GetUser('id') userId: number) {
